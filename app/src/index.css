@@ -1,0 +1,429 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+    color: var(--gray);
+}
+
+:root {
+    --white: #F8F9FA;
+    --w1: #E9ECEF;
+    --w2: #CED4DA;
+    --w3: #ADB5BD;
+    --g1: #6C757D;
+    --gray: #212529;
+    --g4: #343A40;
+    --blue: #40aae8
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.header {
+    width: 100%;
+    height: 35px;
+}
+
+.head {
+    width: 100%;
+    height: 100%;
+    background-color: var(--white);
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.head .webControls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    height: 100%;
+    padding-right: 20px;
+}
+
+.webControls div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px;
+    padding: 4px;
+    transition: all ease-in-out .2s;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+    border-radius: 8px;
+}
+
+.webControls .reload {
+    padding: 7px;
+    transform: rotate(90deg);
+}
+
+.webControls div:hover {
+    background-color: var(--w1);
+}
+
+.head .windowOptions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    -webkit-app-region: no-drag;
+    height: 100%;
+}
+
+.windowOptions .option {
+    padding-left: 18px;
+    padding-right: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    height: 100%;
+}
+
+.windowOptions .option:hover {
+    background-color: var(--w1);
+    opacity: 1;
+}
+
+
+.head .menu {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu .UrlInputContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 80%;
+    height: 100%;
+    margin-right: 30px;
+    margin-left: 30px;
+}
+
+.inputWrapper .reload {
+    position: absolute;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    cursor: pointer;
+}
+
+.menu .urlInput {
+    width: 100%;
+    height: 70%;
+    border-radius: 8px;
+    border: 0;
+    background-color: var(--w1);
+    -webkit-app-region: no-drag;
+    outline: none;
+    padding-left: 8px;
+    text-align: center;
+    font-size: small;
+    color: var(--g1);
+    transition: all ease-in-out .2s;
+}
+
+.menu .urlInput:focus {
+    color: var(--gray);
+    text-align: left;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    -webkit-app-region: no-drag;
+}
+
+.content * {
+    -webkit-app-region: no-drag;
+}
+
+.host {
+    width: 100%;
+    height: 100%;
+}
+
+.spacer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+.window {
+    width: 100%;
+    height: 100%;
+}
+
+.window .head {
+    width: 100%;
+    height: 35px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: visible;
+}
+
+.head .tabs {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    width: 100%;
+    height: 90%;
+}
+
+@keyframes slideInFromLeft {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+
+.head .tab {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70%;
+    position: relative;
+    min-width: 150px;
+    padding-right: 10px;
+    cursor: pointer;
+    transition: all ease-in-out .2s;
+    animation: .25s ease-out 0s 1 slideInFromLeft;
+}
+
+.tab.true {
+    border: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    background-color: var(--w1);
+    position: relative;
+    min-width: 150px;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 4px;
+    padding-right: 10px;
+    cursor: pointer;
+    transition: all ease-in-out .2s;
+}
+
+.head .tab .title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    text-align: center;
+}
+
+.head .tab .icon {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+.head .tab img {
+    height: 15px;
+}
+
+.head .newTab {
+    height: 30px;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 100%;
+}
+
+.head .newTab:hover {
+    background-color: var(--w1);
+}
+
+.head .drag {
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    background-color: var(--w1);
+    position: relative;
+    min-width: 150px;
+    padding-right: 10px;
+    box-shadow: 0px 0px 1px  var(--g1);
+    cursor: pointer;
+}
+
+.window .ports {
+    width: 100%;
+    height: calc(100% - 35px);
+    opacity: .7;
+}
+
+.window .port {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--g1);
+}
+
+.port.false {
+    display: none;
+}
+
+.port .preview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.591);
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bolder;
+    opacity: 0;
+    transition: all ease-in-out .3s;
+}
+
+.viewContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--g1);
+    font-size: larger;
+    visibility: hidden;
+}
+
+.viewContainer.inactive {
+    display: none;
+}
+
+.view {
+    position: fixed;
+}
+
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.webview {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+@keyframes spinnerwait {
+    0% { transform: rotate(359deg) }
+    to { transform: rotate(0deg) }
+}
+.gg-spinner-wait {
+    transform: scale(var(--ggs,0.8))
+}
+.gg-spinner-wait,
+.gg-spinner-wait::before {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 20px
+}
+.gg-spinner-wait::before {
+    content: "";
+    position: absolute;
+    border-radius: 100px;
+    animation: spinnerwait 1s cubic-bezier(.6,0,.4,1) infinite;
+    border: 3px solid transparent;
+    border-top-color: currentColor
+}
+
+@keyframes spinnerload {
+    0% { transform: rotate(0deg) }
+    to { transform: rotate(359deg) }
+}
+.gg-spinner-load {
+    transform: scale(var(--ggs,0.8))
+}
+.gg-spinner-load,
+.gg-spinner-load::before {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 20px;
+    color: var(--blue);
+}
+.gg-spinner-load::before {
+    content: "";
+    position: absolute;
+    border-radius: 100px;
+    animation: spinnerload 1s cubic-bezier(.6,0,.4,1) infinite;
+    border: 3px solid transparent;
+    border-top-color: currentColor
+}

@@ -1,0 +1,22 @@
+<html>
+<head>
+  <style type="text/css">
+    * { margin: 0; }
+    #browser { height: 70%; }
+    #devtools { height: 30%; }
+  </style>
+</head>
+<body>
+  <webview id="browser" src="https://github.com"></webview>
+  <webview id="devtools"></webview>
+  <script>
+    const browserView = document.getElementById('browser')
+    const devtoolsView = document.getElementById('devtools')
+    browserView.addEventListener('dom-ready', () => {
+      const browser = browserView.getWebContents()
+      browser.setDevToolsWebContents(devtoolsView.getWebContents())
+      browser.openDevTools()
+    })
+  </script>
+</body>
+</html>
