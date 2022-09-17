@@ -246,9 +246,9 @@ body {
     position: relative;
     min-width: 150px;
     padding-right: 10px;
-    cursor: pointer;
     transition: all ease-in-out .2s;
     animation: .25s ease-out 0s 1 slideInFromLeft;
+    font-size: smaller;
 }
 
 .tab.true {
@@ -263,16 +263,17 @@ body {
     border-top-right-radius: 8px;
     border-top-left-radius: 4px;
     padding-right: 10px;
-    cursor: pointer;
     transition: all ease-in-out .2s;
 }
 
 .head .tab .title {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    text-align: center;
+    justify-content: center;
+}
+
+.tab .title p {
+    height: 100%;
 }
 
 .head .tab .icon {
@@ -297,22 +298,53 @@ body {
     border-radius: 100%;
 }
 
+.newTab div {
+    display: none;
+}
+
 .head .newTab:hover {
     background-color: var(--w1);
+}
+
+.head .closeTab {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.closeTab svg {
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 100%;
+    transition: all ease-in-out .2s;
+    opacity: 0.8;
+}
+
+.closeTab svg:hover {
+    background-color: var(--w2);
+    opacity: 1;
 }
 
 .head .drag {
     border-radius: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     height: 100%;
-    background-color: var(--w1);
     position: relative;
-    min-width: 150px;
+    min-width: 80px;
     padding-right: 10px;
     box-shadow: 0px 0px 1px  var(--g1);
     cursor: pointer;
+}
+
+.head .drag div {
+    display: block;
+}
+
+.head .drag svg {
+    display: none;
 }
 
 .window .ports {
@@ -364,19 +396,53 @@ body {
     display: none;
 }
 
-.view {
-    position: fixed;
-}
-
 .hidden {
     opacity: 0;
     visibility: hidden;
 }
 
-.webview {
+.view {
+    position: fixed;
     width: 100%;
     height: 100%;
-    background-color: white;
+}
+
+.viewHost {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.webview {
+    height: 100%;
+    flex-grow: 1;
+}
+
+.devtoolsWindow {
+    background-color: var(--g4);
+    width: 500px;
+    height: 100%;
+    position: relative;
+    display: none;
+}
+
+.devtoolsResizer {
+    position: absolute;
+    left: -5px;
+    width: 10px;
+    height: 100%;
+    cursor: w-resize;
+    display: flex;
+}
+
+.devtools {
+    width: 100%;
+    height: 100%;
+}
+
+.devtoolsResizer:hover {
+    width: 100px;
+    left: -50px;
 }
 
 @keyframes spinnerwait {

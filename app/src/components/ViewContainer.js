@@ -10,7 +10,6 @@ function ViewContainer({ id, visibility, update, setVisible }) {
     function init() {
         setTimeout(() => {
             events.emit("view-create", id)
-            console.log("creating view");
         }, 10);
     
         events.on(`${id}-ready`, () => {
@@ -37,15 +36,10 @@ function ViewContainer({ id, visibility, update, setVisible }) {
                 if (title.length > 20) {
                     title = title.slice(0, 20) + "..."
                 }
-                
-                console.log("idle");
 
                 update(id, "title", title)
                 update(id, "status", "idle")
             })
-
-            //listen for interactions (com.js)
-            console.log("ja");
 
             webview.addEventListener("ipc-message", e => {
                 if (e.channel == "interact") {

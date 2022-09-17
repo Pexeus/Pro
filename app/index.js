@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, webContents, ipcMain  } = require('electron')
 const path = require('path')
 const window = require("./electron/window")
 
@@ -12,7 +12,8 @@ function createWindow () {
     webPreferences: {
       webviewTag: true,
       sandbox: false,
-      preload: path.join(__dirname, './electron/preload.js')
+      preload: path.join(__dirname, './electron/preload.js'),
+      contextIsolation: false
     }
   })
 
@@ -44,4 +45,12 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+ipcMain.on('devtools-enable', (e, data) => {
+  const target = webContents.fromId(data.view)
+  const devtools = webContents.fromId(data.devtools)
+  target.setDevToolsWebContents(devtools)
+  target.openDevTools()
+  devtools.executeJavaScript("window.location.reload()");
 })

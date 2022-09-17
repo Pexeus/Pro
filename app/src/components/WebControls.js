@@ -55,7 +55,7 @@ function WebControls({ tab }) {
 
     return (
         <div className='webControls'>
-            <IconContext.Provider value={{ size: "1.5em", color: "red" }}>
+            <IconContext.Provider value={{ size: "1.5em"}}>
                 {tab.backward}
                 {tab.forward}
             </IconContext.Provider>

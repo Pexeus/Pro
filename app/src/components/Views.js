@@ -6,6 +6,8 @@ import View from './View';
 function Views() {
     const [views, setViews] = useState([])
     const [viewClasses, setViewClasses] = useState("view")
+    const [, updateState] = useState();
+    const forceUpdate = React.useCallback(() => updateState({}), []);
 
     events.on("views-display", display => {
         if (!display) {
@@ -26,6 +28,17 @@ function Views() {
 
     }, {dublicates: false})
 
+    events.on("view-remove", toDelete => {
+        setViews(current => {
+            const index = current.indexOf(toDelete)
+            current.splice(index, 1)
+
+            return current
+        })
+
+        forceUpdate()
+
+    }, {dublicates: false})
 
     return (
         <div className={viewClasses}>

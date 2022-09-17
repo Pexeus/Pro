@@ -22,7 +22,6 @@ export default function Window({ options, spawn, despawn }) {
   //on drag start [emitted: newTab]
   function drag(e) {
     e.target.classList.add("drag")
-    e.target.innerHTML = "New Tab"
 
     //emit event to all views to hide them
     events.emit("views-display", false)
@@ -31,19 +30,14 @@ export default function Window({ options, spawn, despawn }) {
   //on drag end [emitted: newTab]
   function dragEnd(e) {
     e.target.classList.remove("drag")
-    e.target.innerHTML = "+"
   }
 
   //on drag over (port)
   function dragOver(e) {
-    console.log("dragOver");
-    console.log(e.target);
-
     if (e.target.classList.contains("port")) {
       e.preventDefault()
 
       const preview = e.target.children[0]
-      console.log(e.target);
       preview.style.opacity = 1
       preview.style.visibility = "visible"
     }
@@ -61,7 +55,6 @@ export default function Window({ options, spawn, despawn }) {
 
   //on drag over (preview)
   function updatePreview(e) {
-    console.log("preview");
     e.preventDefault()
 
     const port = e.target.parentNode
@@ -204,8 +197,40 @@ export default function Window({ options, spawn, despawn }) {
     forceUpdate()
   }
 
-  function onTabClick(e) {
-    console.log(e);
+  function closeTab(tab) {
+    //save tab to be opened
+    let newTabId = false
+
+    //check amount of open tabs
+
+    //remove viewContainer
+    setTabs(current => {
+      let visibleTabAvailable
+
+      //delete closing tab
+      delete current[tab.id]
+
+      //check if another tab is visible
+      for (const id in current) {
+        if (current[id].visible == true) {
+          visibleTabAvailable = true
+        }
+      }
+
+      //if not, make first tab visible (TODO: better selection of new tab)
+      if (!visibleTabAvailable) {
+        const keys = Object.keys(current)
+
+        setVisible(keys[0])
+      }
+
+      return current
+    })
+
+    //send signal to destroy linked view
+    events.emit("view-remove", tab.id)
+
+    forceUpdate()
   }
 
 
@@ -217,10 +242,13 @@ export default function Window({ options, spawn, despawn }) {
       <div className='head'>
         <div className='tabs'>
           {Object.values(tabs).map(tab => (
-            <Tab key={tab.id} tab={tab} setVisible={setVisible}/>
+            <Tab key={tab.id} tab={tab} setVisible={setVisible} close={closeTab}/>
           ))}
           <div className='newTab' draggable="true" onDragStart={drag} onDragEnd={dragEnd} onClick={newTab}>
             <VscAdd />
+            <div>
+              <p>New Tab</p>
+            </div>
           </div>
         </div>
       </div>
