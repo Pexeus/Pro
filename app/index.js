@@ -1,6 +1,8 @@
 const { app, BrowserWindow, webContents, ipcMain  } = require('electron')
+const isDev = require('electron-is-dev');
 const path = require('path')
 const window = require("./electron/window")
+
 
 
 function createWindow () {
@@ -13,21 +15,28 @@ function createWindow () {
       webviewTag: true,
       sandbox: false,
       preload: path.join(__dirname, './electron/preload.js'),
-      contextIsolation: false
+      contextIsolation: false,
     }
   })
-
   //setup listeners
   window.setup(win)
 
-  //move to second screen
-  win.setPosition(2000, 100)
+  //check for dev mode
+  if (isDev) {
+    //dev tools
+    win.webContents.openDevTools({mode: "right"})
 
-  //dev tools
-  win.webContents.openDevTools({mode: "right"})
+    //load dev app
+    win.loadURL("http://localhost:3000")
 
-  //open url
-  win.loadURL(`http://localhost:3000/`)
+    //move to second screen
+    win.setPosition(2000, 100)
+  }
+
+  if (!isDev) {
+    //load build
+    win.loadURL(`file://${path.join(__dirname, './static/index.html')}`)
+  }
 }
 
 

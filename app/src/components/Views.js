@@ -11,11 +11,11 @@ function Views() {
 
     events.on("views-display", display => {
         if (!display) {
-            setViewClasses("view hidden")
+            setViewClasses("views hidden")
         }
 
         if (display) {
-            setViewClasses("view")
+            setViewClasses("views")
         }
 
     }, {dublicates: false})

@@ -1,6 +1,7 @@
 import React from 'react'
 import { IconContext } from "react-icons";
 import { VscChromeClose } from "react-icons/vsc"
+import events from '../events';
 
 function tab({ tab, setVisible, close }) {
     function init() {
@@ -25,10 +26,16 @@ function tab({ tab, setVisible, close }) {
         setVisible(id)
     }
 
+    function dragStart(e) {
+        e.dataTransfer.setData('mode', "tab"); 
+        e.dataTransfer.setData('id', tab.id);  
+        events.emit("views-display", false)
+    }
+
     init()
 
     return (
-        <div className={`tab ${String(tab.visible)}`} key={tab.id} onClick={(e) => {setVisibleHandler(tab.id, e)}}>
+        <div draggable="true" onDragStart={dragStart} className={`tab ${String(tab.visible)}`} key={tab.id} onClick={(e) => {setVisibleHandler(tab.id, e)}}>
             <div className='icon'>
                 {tab.icon}
             </div>

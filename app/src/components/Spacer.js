@@ -30,6 +30,10 @@ function Spacer() {
             topSpacer.appendChild(sibling)
         }
 
+        if (topSpacer.children.length < 2) {
+            topSpacer.remove()
+        }
+
         container.remove()
         spacer.remove()
     }

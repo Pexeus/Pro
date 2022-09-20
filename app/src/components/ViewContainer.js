@@ -6,13 +6,26 @@ function ViewContainer({ id, visibility, update, setVisible }) {
     const [classes, setClassses] = useState("active")
     const [setup, setSetup] = useState(false)
 
-
     function init() {
-        setTimeout(() => {
+        const view = document.getElementById(`view_${id}`)
+        const self = document.getElementById(`container_${id}`)
+
+        if (self == null) {
+            return
+        }
+        
+        if (view == null) {
             events.emit("view-create", id)
-        }, 10);
+
+            events.on(`${id}-ready`, () => {
+                viewListeners()
+            })
+        }
+        else {
+            viewListeners()
+        }
     
-        events.on(`${id}-ready`, () => {
+        function viewListeners() {
             const webview = document.getElementById(`webview_${id}`)
             
             //listen for favicon
@@ -58,7 +71,7 @@ function ViewContainer({ id, visibility, update, setVisible }) {
             update(id, "status", "idle")
             
             setVisible(id)
-        })
+        }
     }
 
     //on component update
@@ -74,7 +87,9 @@ function ViewContainer({ id, visibility, update, setVisible }) {
             setSetup(true)
             init()
         }
-        
+        return () => {
+            //console.log(`${id} out`);
+        }
     });
 
     return (

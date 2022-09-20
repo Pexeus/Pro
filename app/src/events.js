@@ -25,6 +25,14 @@ const events = {
         document.addEventListener(identifier, e => {
             func(e.detail)
         })
+    },
+    on2: (identifier, func) => {
+        document.addEventListener(identifier, handler)
+
+        function handler(e) {
+            console.log(e);
+            document.removeEventListener(identifier, handler)
+        }
     }
 }
 

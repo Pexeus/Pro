@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import events from '../events';
+import {waitFor} from "../observer"
 
 function View({id}) {
     //enorm scuffte shit, da mueses e besseri lösig geh
     let [initiated, setInit] = useState(false)
     const startpage = "https://www.google.com/"
 
-    function link() {
-        const view = document.getElementById(`view_${id}`)
+    async function link() {
+        const view = await waitFor(`#view_${id}`)
+        console.log("linking", id);
 
         function adjust() {
             const container = document.getElementById(`container_${id}`)
@@ -15,6 +17,8 @@ function View({id}) {
             if (container == null) {
                 window.removeEventListener("resize", adjust)
                 document.removeEventListener("tab-focused-ready", adjust)
+
+                console.log("deactivating", id);
 
                 return
             }
@@ -35,6 +39,7 @@ function View({id}) {
 
         window.addEventListener("resize", adjust)
         document.addEventListener("tab-focused-ready", adjust)
+        document.addEventListener("adjust-all", adjust)
 
         adjust()
     }
@@ -94,8 +99,8 @@ function View({id}) {
         devtoolsWindow.style.display = "none"
     }
 
-    function init() {
-        const view = document.getElementById(`webview_${id}`)
+    async function init() {
+        const view = await waitFor(`#webview_${id}`)
         
         link()
         register()
@@ -113,19 +118,23 @@ function View({id}) {
                 }
             }
         })
+
+        events.on("tab-migrate", tabId => {
+            if (tabId == id) {
+                link()
+            }
+        })
     }
 
     //trash
-    setTimeout(() => {
-        if (!initiated) {
-            init()
-        }
-    }, 10);
+    if (!initiated) {
+        init()
+    }
 
     return (
         <div id={`view_${id}`} className='view'>
             <div className='viewHost'>
-                <webview id={`webview_${id}`} src={startpage} className='webview' preload='file://C:\Users\Liam\Documents\Git\hub\Pro\app\src\inject\com.js'/>
+                <webview partition='persist:ass' id={`webview_${id}`} src={startpage} className='webview' preload='file://C:\Users\Liam\Documents\Git\hub\Pro\app\src\inject\com.js'/>
                 <div id={`devtools_window_${id}`} className="devtoolsWindow">
                     <div className='devtoolsResizer'></div>
                     <webview className='devtools' id={`devtools_${id}`} src="about:blank"/>

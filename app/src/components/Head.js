@@ -106,7 +106,7 @@ function Head() {
 
         setTimeout(() => {
             events.emit("tab-focused-ready", id)
-        }, 100);
+        }, 10);
     }, {dublicates: false})
 
     return (

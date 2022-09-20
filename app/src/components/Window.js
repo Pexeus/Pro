@@ -14,6 +14,7 @@ export default function Window({ options, spawn, despawn }) {
     }
   })
 
+  const [initiated, setInitiated] = useState(false)
   const [, updateState] = useState();
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
@@ -22,6 +23,7 @@ export default function Window({ options, spawn, despawn }) {
   //on drag start [emitted: newTab]
   function drag(e) {
     e.target.classList.add("drag")
+    e.dataTransfer.setData('mode', "new"); 
 
     //emit event to all views to hide them
     events.emit("views-display", false)
@@ -136,12 +138,36 @@ export default function Window({ options, spawn, despawn }) {
 
   //on drop (preview)
   function drop(e) {
-    const preview = e.target
-    preview.style.left = 0
-    preview.style.width = "100%"
-    preview.style.opacity = 0
-    preview.style.visibility = "hidden"
+    const dropMode = e.dataTransfer.getData("mode")
 
+    resetPreview(e)
+    
+    if (dropMode == "tab") {
+      dropTab(e)
+    }
+    if (dropMode == "new") {
+      dropNew(e)
+    }
+  }
+
+  function dropTab(e) {
+    //check if window contains this tab
+    const tabId = Number(e.dataTransfer.getData("id"))
+    
+    //check if the tab shall be used to the same window
+    //if yes, end process
+    if (tabs[tabId] != undefined && spawnMode == "center") {
+      return
+    }
+
+    if (spawnMode == "center") {
+      events.emit("tab-migrate", tabId)
+      newTab(tabId)
+    }
+
+  }
+
+  function dropNew(e) {
     //TODO: spawn mode center(new tab)
     if (spawnMode != "center") {
       spawn(e.target.parentElement.parentElement.parentElement.parentElement, spawnMode)
@@ -149,6 +175,14 @@ export default function Window({ options, spawn, despawn }) {
 
     //display all views
     events.emit("views-display", true)
+  }
+
+  function resetPreview(e) {
+    const preview = e.target
+    preview.style.left = 0
+    preview.style.width = "100%"
+    preview.style.opacity = 0
+    preview.style.visibility = "hidden"
   }
 
   //close this container
@@ -161,6 +195,11 @@ export default function Window({ options, spawn, despawn }) {
   //update view status
   function updateView(id, key, value) {
     setTabs(current => {
+      if (current[id] == undefined) {
+        console.log("message from dead component", id, key, value);
+        return current
+      }
+
       current[id][key] = value
 
       return current
@@ -170,9 +209,13 @@ export default function Window({ options, spawn, despawn }) {
   }
 
   //add tab
-  function newTab() {
+  function newTab(id) {
+    if (!id) {
+      id = Date.now()
+    }
+
     setTabs(current => {
-      current[Date.now()] = { id: Date.now() }
+      current[id] = { id: id }
 
       return current
     })
@@ -182,9 +225,17 @@ export default function Window({ options, spawn, despawn }) {
 
   //set tab to visible
   function setVisible(visibleId) {
+    if (tabs[visibleId] == undefined) {
+      return
+    }
+
     events.emit("tab-focused", visibleId)
 
     setTabs(current => {
+      if (tabs[visibleId] == undefined) {
+        return current
+      }
+
       for (const id in current) {
         current[id].visible = false
       }
@@ -198,43 +249,107 @@ export default function Window({ options, spawn, despawn }) {
   }
 
   function closeTab(tab) {
-    //save tab to be opened
-    let newTabId = false
-
     //check amount of open tabs
+    const numTabs = Object.keys(tabs).length
 
-    //remove viewContainer
-    setTabs(current => {
-      let visibleTabAvailable
+    if (numTabs < 2) {
+      console.log("closing window");
+      despawner()
+    }
+    
+    if (numTabs > 1) {
+      //remove viewContainer
+      setTabs(current => {
+        let visibleTabAvailable
 
-      //delete closing tab
-      delete current[tab.id]
+        //delete closing tab
+        delete current[tab.id]
 
-      //check if another tab is visible
-      for (const id in current) {
-        if (current[id].visible == true) {
-          visibleTabAvailable = true
+        //check if another tab is visible
+        for (const id in current) {
+          if (current[id].visible == true) {
+            visibleTabAvailable = true
+          }
         }
-      }
 
-      //if not, make first tab visible (TODO: better selection of new tab)
-      if (!visibleTabAvailable) {
-        const keys = Object.keys(current)
+        //if not, make first tab visible (TODO: better selection of new tab)
+        if (!visibleTabAvailable) {
+          const keys = Object.keys(current)
 
-        setVisible(keys[0])
-      }
+          setVisible(keys[0])
+        }
 
-      return current
-    })
+        return current
+      })
+    }
 
     //send signal to destroy linked view
     events.emit("view-remove", tab.id)
+    events.emit("adjust-all")
 
     forceUpdate()
   }
 
+  function migrateTab(id) {
+    if (tabs[id] == undefined) {
+      return
+    }
 
+    //check amount of open tabs
+    const numTabs = Object.keys(tabs).length
 
+    if (numTabs < 2) {
+      console.log("closing window");
+      despawner()
+    }
+    
+    if (numTabs > 1) {
+      //remove viewContainer
+      setTabs(current => {
+        let visibleTabAvailable
+
+        //delete closing tab
+        delete current[id]
+
+        //check if another tab is visible
+        for (const id in current) {
+          if (current[id].visible == true) {
+            visibleTabAvailable = true
+          }
+        }
+
+        //if not, make first tab visible (TODO: better selection of new tab)
+        if (!visibleTabAvailable) {
+          const keys = Object.keys(current)
+
+          setVisible(keys[0])
+        }
+
+        return current
+      })
+    }
+
+    //force update
+    forceUpdate()
+
+    //adjust all views
+    events.emit("adjust-all")
+
+    //display all views
+    events.emit("views-display", true)
+  }
+  
+  function init() {
+    if (initiated) {
+      return
+    }
+    
+    setInitiated(true)
+
+    events.on("tab-migrate", migrateTab)
+  }
+
+  init()
 
 
   return (
@@ -244,7 +359,7 @@ export default function Window({ options, spawn, despawn }) {
           {Object.values(tabs).map(tab => (
             <Tab key={tab.id} tab={tab} setVisible={setVisible} close={closeTab}/>
           ))}
-          <div className='newTab' draggable="true" onDragStart={drag} onDragEnd={dragEnd} onClick={newTab}>
+          <div className='newTab' draggable="true" onDragStart={drag} onDragEnd={dragEnd} onClick={() => {newTab()}}>
             <VscAdd />
             <div>
               <p>New Tab</p>
